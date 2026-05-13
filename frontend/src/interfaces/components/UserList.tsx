@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import type { User } from '../../domain/entities'
-import { UserUseCases } from '../../application/use-cases'
-import { HttpUserRepository } from '../../infrastructure/http-repositories'
+
+const API_BASE = import.meta.env.VITE_API_URL || 'https://api-pruebas-y9uv.onrender.com'
 
 export function UserList() {
   const [users, setUsers] = useState<User[]>([])
@@ -9,9 +9,8 @@ export function UserList() {
 
   useEffect(() => {
     const loadUsers = async () => {
-      const repo = new HttpUserRepository()
-      const useCase = new UserUseCases(repo)
-      const data = await useCase.getAllUsers()
+      const response = await fetch(`${API_BASE}/api/users`)
+      const data = await response.json()
       setUsers(data)
       setLoading(false)
     }

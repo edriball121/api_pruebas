@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import type { Post } from '../../domain/entities'
-import { PostUseCases } from '../../application/use-cases'
-import { HttpPostRepository } from '../../infrastructure/http-repositories'
+
+const API_BASE = import.meta.env.VITE_API_URL || 'https://api-pruebas-y9uv.onrender.com'
 
 export function PostList() {
   const [posts, setPosts] = useState<Post[]>([])
@@ -9,10 +9,14 @@ export function PostList() {
 
   useEffect(() => {
     const loadPosts = async () => {
-      const repo = new HttpPostRepository()
-      const useCase = new PostUseCases(repo)
-      const data = await useCase.getAllPosts()
-      setPosts(data)
+      const response = await fetch(`${API_BASE}/api/posts`)
+      const data = await response.json()
+      setPosts(data.map((p: any) => ({
+        id: p.id,
+        user_id: p.userId,
+        title: p.title,
+        body: p.body
+      })))
       setLoading(false)
     }
     loadPosts()

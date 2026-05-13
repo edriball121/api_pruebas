@@ -10,6 +10,8 @@ interface DashboardData {
   user_distribution: Record<string, number>
 }
 
+const API_BASE = import.meta.env.VITE_API_URL || 'https://api-pruebas-y9uv.onrender.com'
+
 export function Dashboard() {
   const [data, setData] = useState<DashboardData | null>(null)
   const [loading, setLoading] = useState(true)
@@ -17,7 +19,7 @@ export function Dashboard() {
 
   const fetchDashboard = async () => {
     try {
-      const response = await fetch('/api/dashboard')
+      const response = await fetch(`${API_BASE}/api/dashboard`)
       if (!response.ok) throw new Error('Failed to fetch dashboard data')
       const result = await response.json()
       setData(result)
@@ -64,7 +66,7 @@ export function Dashboard() {
             <div key={user} className="bar">
               <span className="bar-label">{user}</span>
               <div className="bar-container">
-                <div className="bar-fill" style={{ width: `${count * 10}%` }}></div>
+                <div className="bar-fill" style={{ width: `${Math.min(count * 10, 100)}%` }}></div>
               </div>
               <span className="bar-value">{count}</span>
             </div>
